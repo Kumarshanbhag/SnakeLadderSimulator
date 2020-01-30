@@ -3,19 +3,28 @@ echo "Welcome To Snake And Ladder Simulator"
 NO_PLAY=1
 LADDER=2
 SNAKE=3
+WIN_POSITION=100
 
 function CheckOption() {
-case $1 in
-	$NO_PLAY)
-		position=$position
-	;;
-	$LADDER)
-		position=$(($position+$2))
-	;;
-	$SNAKE)
-		position=$(($position-$2))
-	;;
-esac
+while (( $position < $WIN_POSITION ))
+do
+	case $1 in
+		$NO_PLAY)
+			position=$position
+		;;
+		$LADDER)
+			position=$(($position+$2))
+		;;
+		$SNAKE)
+			position=$(($position-$2))
+			if(($position<0))
+			then
+				position=0
+			fi
+		;;
+	esac
+	RandomCalculate 3 6
+done
 }
 
 function RandomCalculate() {
