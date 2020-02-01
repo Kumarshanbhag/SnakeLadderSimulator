@@ -1,5 +1,5 @@
 #!/bin/bash -x
-declare -A player
+declare -A game
 echo "Welcome To Snake And Ladder Simulator"
 NO_PLAY=1
 LADDER=2
@@ -10,6 +10,7 @@ START_POSITION=0
 function CheckOption() {
 while [[ $position -ne $WIN_POSITION ]]
 do
+position=${game[$3]}
 ((count++))
 	case $1 in
 		$NO_PLAY)
@@ -30,24 +31,36 @@ do
 			fi
 		;;
 	esac
-player[$count]=$position
-RandomCalculate 3 6
+game[$3]=$position
+CheckWin $3
 done
 }
 
 function RandomCalculate() {
-CheckOption $((RANDOM%$1+1)) $((RANDOM%$2+1))
+CheckOption $((RANDOM%$1+1)) $((RANDOM%$2+1)) $3
 }
 
-function DisplayDieAndPosition() {
-for die in ${!player[@]}
-do
-	echo "Die $die : ${player[$die]}"
-done | sort -k2 -n 
+function CheckWin() {
+	if((${game[$1]}==$WIN_POSITION))
+	then
+		echo "$1 won"
+		echo "Die Rolled $count Times"
+	else
+		SwitchPlayer
+	fi
 }
 
-position=0
+function SwitchPlayer {
+	if(($((count%2))==0))
+	then
+		RandomCalculate 3 6 'player1'
+	else
+		RandomCalculate 3 6 'player2'
+	fi
+}
+
 count=0
-player[$count]=$position
+game[player1]=0
+game[player2]=0
+SwitchPlayer
 RandomCalculate 3 6
-DisplayDieAndPosition
